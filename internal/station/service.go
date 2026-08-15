@@ -81,8 +81,10 @@ func (service *Service) Register(ctx context.Context, request RegisterRequest) (
 	}
 
 	registration := service.repository.SaveRegistration(request)
-	if err := service.notifier.Notify(ctx, registration); err != nil {
-		return RegistrationResult{}, err
+	if service.notifier != nil {
+		if err := service.notifier.Notify(ctx, registration); err != nil {
+			return RegistrationResult{}, err
+		}
 	}
 	return RegistrationResult{Registration: registration, Message: "活动报名成功"}, nil
 }
